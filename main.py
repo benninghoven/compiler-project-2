@@ -1,4 +1,5 @@
 # Devin Benninghoven
+# Daniel Garcia
 
 inputStrings = [
     ["(", "id", "+", "id", ")", "*", "id", "$"],
@@ -51,26 +52,43 @@ def parse_input(inputString):
     originalInput = inputString
 
     stack = [0]  # Start with the initial state
+    step = 0
 
     while True:
 
+        step += 1
+
+        outputLine = ""
+        outputLine += str(step)
+        outputLine += " "
+
         currentState = stack[-1]
-        print("current state", currentState)
+
+        outputLine += str(stack)
+        outputLine += " "
 
         inputSymbol = inputString[0]
-        print("input symbol", inputSymbol)
+        outputLine += str(inputSymbol)
+        outputLine += " "
 
         action = parsingTable[currentState][inputSymbol]
-        print("action", action)
 
-        if action[0] == 'S':  # Shift
-            stack.append(int(action[1:]))  # Push the new state
-            inputString = inputString[1:]  # Consume the input symbol
+        outputLine += str(action)
 
-        elif action[0] == 'R':  # Reduce
+        print(outputLine)
+
+        if not action:
+            print(f"{originalInput} is rejected")
+            break
+
+        if action[0] == 'S':
+            stack.append(int(action[1:]))
+            inputString = inputString[1:]
+
+        elif action[0] == 'R':
             production = int(action[1:])
             for _ in range(len(productionRules[production][1])):
-                stack.pop()  # Pop symbols based on the production length
+                stack.pop()
             goto_state = parsingTable[stack[-1]][productionRules[production][0]]
             stack.append(goto_state)
 

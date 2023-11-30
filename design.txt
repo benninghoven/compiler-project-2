@@ -1,0 +1,44 @@
+For this project, we will use Python for our scripting language.
+
+We are given a parsing table which we can represent with a dictionary and lists,
+holding each value as a string value. That way "id" and "+" can be treated the same
+even if one has more chars than the other.
+
+The context free grammar can be represented with a list of lists,
+giving each state as the first value and the second value being the rules.
+
+We shall save the input strings in a list of strings instead of one giant string,
+this will make it easier to code parsing the input, as it will iterate every 
+instance in the list.
+
+
+First and follow rules are a dictionary with the key being the nonterminal value and
+the value being a list of strings, the rules.
+
+Given that our code will only be tested on three strings, we will not
+have to vet each input. We know that each string will contain a terminal
+$ symbol at the end.
+
+The main part of the code is a while True loop that runs until a final
+state is reached, or the string is invalid.
+
+Because the paper states that we must print each step, we shall create
+a string that holds all our vallues of
+
+STEP
+STACK
+INPUT
+ACTION
+
+We use the parsing table for the majority of our movements, since it has
+each value that tells us to go to the next value. We strup the beggining
+char out of each input such as "S1" becoming "1", and plug that into
+our parsing table
+
+
+Finally we have to check at the end of our loop if it is valid or not as
+well as if it's a shift or reduce action
+
+For a sanity check, we make sure if one of our actions is inside the
+parsing table. I added this to the begginning of our if statements.
+
