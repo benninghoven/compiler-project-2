@@ -1,9 +1,9 @@
 # Devin Benninghoven
 
 inputStrings = [
-    "(id+id)*id$",
-    "id*id$",
-    "(id*)$",
+    ["(", "id", "+", "id", ")", "*", "id", "$"],
+    ["id", "*", "id", "$"],
+    ["(", "id", "*", ")", "$"],
 ]
 
 productionRules = {
@@ -14,6 +14,18 @@ productionRules = {
     5: ('F', ['(', 'E', ')']),
     6: ('F', ['id']),
 }
+
+first = {
+    "E": ["(", "id"],
+    "T": ["(", "id"],
+    "F": ["(", "id"],
+        }
+
+follow = {
+    "E": ["+", ")", "$"],
+    "T": ["+", "*", ")", "$"],
+    "F": ["+", "*", ")", "$"],
+    }
 
 parsingTable = {
     0:  {"id": "S5", "+": None, "*": None, "(": "S4", ")": None, "$": None, "E": 1, "T": 2, "F": 3},
@@ -34,30 +46,42 @@ parsingTable = {
 # STEP STACK INPUT ACTION
 
 
-def parse_input(input_string):
+def parse_input(inputString):
+
+    originalInput = inputString
+
     stack = [0]  # Start with the initial state
-    input_string += '$'  # Add end-of-input marker
 
     while True:
-        current_state = stack[-1]
-        input_symbol = input_string[0]
 
-        action = parsingTable[current_state][input_symbol]
+        currentState = stack[-1]
+        print("current state", currentState)
+
+        inputSymbol = inputString[0]
+        print("input symbol", inputSymbol)
+
+        action = parsingTable[currentState][inputSymbol]
+        print("action", action)
 
         if action[0] == 'S':  # Shift
             stack.append(int(action[1:]))  # Push the new state
-            input_string = input_string[1:]  # Consume the input symbol
+            inputString = inputString[1:]  # Consume the input symbol
+
         elif action[0] == 'R':  # Reduce
             production = int(action[1:])
             for _ in range(len(productionRules[production][1])):
                 stack.pop()  # Pop symbols based on the production length
             goto_state = parsingTable[stack[-1]][productionRules[production][0]]
             stack.append(goto_state)
-        elif action == 'acc':  # Accept
-            print("Input accepted!")
-            break
-        else:
-            print("Input rejected!")
+
+        elif action == 'acc':
+            print(f"{originalInput} is accepted")
             break
 
-parse_input("id*id$")
+        else:
+            print(f"{originalInput} is rejected")
+            break
+
+
+for inputString in inputStrings:
+    parse_input(inputString)
